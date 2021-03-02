@@ -1,0 +1,32 @@
+{
+  "name": "hillel-home-work",
+  "version": "0.0.1",
+  "description": "Make your code great again",
+  "scripts": {
+    "lint": "eslint ./"
+  },
+  "author": "Koterniak Serhii",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/core": "^7.12.16",
+    "@babel/plugin-proposal-nullish-coalescing-operator": "^7.12.13",
+    "@babel/plugin-proposal-optional-chaining": "^7.12.16",
+    "@babel/plugin-proposal-private-methods": "^7.12.13",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.20.0",
+    "eslint-plugin-babel": "^5.3.1",
+    "husky": "4.3.8",
+    "lint-staged": "^10.5.4"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "src/*.js": [
+      "eslint ./ --max-warnings=0",
+      "git add"
+    ]
+  }
+}

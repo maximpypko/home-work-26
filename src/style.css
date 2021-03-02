@@ -1,0 +1,118 @@
+body {
+    margin: 0;
+    background-color: #E1E1E1;
+}
+
+.register-form,
+.newTask-form {
+    width: 90%;
+    margin: 0 auto;
+    padding: 20px;
+    border-top: 1px solid #2F2F2F;
+    border-bottom: 1px solid #2F2F2F;
+    display: none;
+    transition: all .4s ease-in-out;
+}
+
+
+.newTodo {
+    display: block;
+    margin: 30px auto;
+    padding: 10px 20px;
+    font-size: 20px;
+    cursor: pointer;
+    background-color: #E1E1E1;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    border: none;
+    transition: all .3s ease-in-out;
+}
+
+.newTodo:hover,
+.task button:hover {
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.5);
+}
+
+.form__label {
+    display: block;
+    text-align: center;
+}
+
+.containerInputs{
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+}
+
+.containerInputs *{
+    border-radius:5px;
+    padding: 5px 10px;
+}
+
+.edit-input {
+    flex-grow: 1;
+    margin-right: 15px;
+}
+
+.containerInputs *:not(:last-child) {
+    margin-right: 10px;
+}
+.order_button {
+    background-color: #E1E1E1;
+
+}
+.warning {
+    margin: 0;
+    text-align: center;
+    text-transform: uppercase;
+    color: red;
+}
+
+.newTask-form {
+    display: none;
+}
+
+.containerTasks {
+    padding: 20px;
+    list-style: none;
+    padding: 40px;
+}
+
+.task {
+    display: flex;
+    padding: 5px;
+    margin: 10px 0;
+    border-bottom: 1px solid #BEBEBE;
+}
+
+.task button {
+    display: block;
+    padding: 5px 10px;
+    font-size: 15px;
+    cursor: pointer;
+    background-color: #E1E1E1;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+    border-radius: 5px;
+    border: none;
+}
+
+.task__complite {
+
+    margin-right: 15px ;
+}
+
+.task__value {
+    display: inline-block;
+    flex-grow: 1;
+    
+}
+.task__delete {
+    margin-left: 10px;
+}
+.green{
+    background-color:seagreen;
+}
+.perfomed {
+    text-decoration:line-through;
+    color: grey;
+}
