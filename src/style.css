@@ -6,7 +6,7 @@ body {
 .register-form,
 .newTask-form {
     width: 90%;
-    margin: 0 auto;
+    margin: 20px auto;
     padding: 20px;
     border-top: 1px solid #2F2F2F;
     border-bottom: 1px solid #2F2F2F;

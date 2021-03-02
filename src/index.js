@@ -176,6 +176,7 @@ createNewTodo.addEventListener('click', () => {
     formRegister.style.display === '' ?
         formRegister.style.display = 'block' :
         formRegister.style.display = '';
+    createNewTodo.style.display = 'none';
 
     registerButton.addEventListener('click', () => {
         const newTodo = new ToDo(login.value, password.value);
