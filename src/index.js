@@ -182,7 +182,6 @@ createNewTodo.addEventListener('click', () => {
         newTodo.auth();
 
         document.body.addEventListener('click', (e) => {
-
             if (e.target.closest('.form__addTask-button')) {
                 newTodo.addTask(addTask.value);
             } else if (e.target.closest('.task__delete')) {
@@ -203,13 +202,9 @@ createNewTodo.addEventListener('click', () => {
                 taskEditButton.addEventListener('click', () => {
                     newTodo.updateTask(editInput.value, taskValue.id);
                 });
-            }
-            else if (e.target.closest('.task__complite')) {
+            } else if (e.target.closest('.task__complite')) {
                 newTodo.compliteTask(e.target.parentElement.children[num1].id);
             }
         });
     });
 });
-
-
-

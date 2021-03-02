@@ -14,7 +14,6 @@ body {
     transition: all .4s ease-in-out;
 }
 
-
 .newTodo {
     display: block;
     margin: 30px auto;
@@ -61,6 +60,7 @@ body {
     background-color: #E1E1E1;
 
 }
+
 .warning {
     margin: 0;
     text-align: center;
@@ -106,12 +106,15 @@ body {
     flex-grow: 1;
     
 }
+
 .task__delete {
     margin-left: 10px;
 }
+
 .green{
     background-color:seagreen;
 }
+
 .perfomed {
     text-decoration:line-through;
     color: grey;
