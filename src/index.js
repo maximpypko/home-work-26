@@ -1,12 +1,12 @@
 class ToDo {
-    #urlApi = 'https://todo.hillel.it';
-    #token = '';
+    urlApi = 'https://todo.hillel.it';
+    token = '';
     login = '';
     password = '';
     $formRegister = document.querySelector('.register-form');
     $addTask = document.querySelector('.form__addTask');
-    containerInputs = document.querySelector('.containerInputs');
-    formNewTask = document.querySelector('.newTask-form');
+    $containerInputs = document.querySelector('.containerInputs');
+    $formNewTask = document.querySelector('.newTask-form');
 
     constructor() {
         this.createNewTodo();
@@ -41,11 +41,11 @@ class ToDo {
 
         if ($login.value && $password.value) {
             this.$formRegister.style.display = '';
-            this.formNewTask.style.display = 'block';
+            this.$formNewTask.style.display = 'block';
             $login.value = '';
             $password.value = '';
 
-            const response = await fetch(`${this.#urlApi}/auth/login`, {
+            const response = await fetch(`${this.urlApi}/auth/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -57,19 +57,19 @@ class ToDo {
             // eslint-disable-next-line camelcase
             const { access_token } = await response.json();
             // eslint-disable-next-line camelcase
-            this.#token = access_token;
+            this.token = access_token;
             this.getTask();
-        } else if (!this.containerInputs.nextElementSibling) {
-            this.containerInputs.insertAdjacentHTML('afterend',
+        } else if (!this.$containerInputs.nextElementSibling) {
+            this.$containerInputs.insertAdjacentHTML('afterend',
                 '<p class ="warning">Fill the form</p>');
         }
     }
 
     async getTask() {
-        const data = await fetch(`${this.#urlApi}/todo`, {
+        const data = await fetch(`${this.urlApi}/todo`, {
             method: 'GET',
             headers: {
-                'Authorization': `Bearer ${this.#token}`,
+                'Authorization': `Bearer ${this.token}`,
                 'Content-Type': 'application/json',
             },
         });
@@ -78,10 +78,10 @@ class ToDo {
 
     addTask = async(value) => {
 
-        await fetch(`${this.#urlApi}/todo`, {
+        await fetch(`${this.urlApi}/todo`, {
             method: 'POST',
             headers: {
-                'Authorization': `Bearer ${this.#token}`,
+                'Authorization': `Bearer ${this.token}`,
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
@@ -92,15 +92,15 @@ class ToDo {
             .then(data => {
                 const responseStatus = 500;
                 if (data.status === responseStatus) {
-                    if (this.containerInputs.nextElementSibling) {
-                        this.containerInputs.nextElementSibling.remove();
+                    if (this.$containerInputs.nextElementSibling) {
+                        this.$containerInputs.nextElementSibling.remove();
                     }
                     this.renderWarningMessage('This note already exists');
                     this.$addTask.value = '';
                 } else {
                     this.$addTask.value = '';
-                    if (this.containerInputs.nextElementSibling) {
-                        this.containerInputs.nextElementSibling.remove();
+                    if (this.$containerInputs.nextElementSibling) {
+                        this.$containerInputs.nextElementSibling.remove();
                     }
                     this.getTask();
                 }
@@ -108,10 +108,10 @@ class ToDo {
     }
 
     async deleteTask(id) {
-        await fetch(`${this.#urlApi}/todo/${id}`, {
+        await fetch(`${this.urlApi}/todo/${id}`, {
             method: 'DELETE',
             headers: {
-                'Authorization': `Bearer ${this.#token}`,
+                'Authorization': `Bearer ${this.token}`,
                 'Content-Type': 'application/json',
             },
         });
@@ -119,10 +119,10 @@ class ToDo {
     }
 
     async updateTask(value, id) {
-        await fetch(`${this.#urlApi}/todo/${id}`, {
+        await fetch(`${this.urlApi}/todo/${id}`, {
             method: 'PUT',
             headers: {
-                'Authorization': `Bearer ${this.#token}`,
+                'Authorization': `Bearer ${this.token}`,
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
@@ -134,10 +134,10 @@ class ToDo {
     }
 
     async compliteTask(id) {
-        await fetch(`${this.#urlApi}/todo/${id}/toggle`, {
+        await fetch(`${this.urlApi}/todo/${id}/toggle`, {
             method: 'PUT',
             headers: {
-                'Authorization': `Bearer ${this.#token}`,
+                'Authorization': `Bearer ${this.token}`,
                 'Content-Type': 'application/json',
             }
         });
@@ -186,13 +186,13 @@ class ToDo {
     }
 
     renderWarningMessage = (message) => {
-        this.formNewTask.insertAdjacentHTML('beforeend',
+        this.$formNewTask.insertAdjacentHTML('beforeend',
             `<p id = "warning" class = "warning">${message}</p>`);
     }
 
     renderTasks = async (result) => {
-        if(this.formNewTask.nextElementSibling.className === 'containerTasks'){
-            this.formNewTask.nextElementSibling.remove();
+        if(this.$formNewTask.nextElementSibling.className === 'containerTasks'){
+            this.$formNewTask.nextElementSibling.remove();
         }
         const containerTasks = document.createElement('ul');
         containerTasks.className = 'containerTasks';
@@ -219,7 +219,7 @@ class ToDo {
                     <button class="task__delete">Delete</button>
                 </li>`);
         });
-        this.formNewTask.after(containerTasks);
+        this.$formNewTask.after(containerTasks);
     }
 }
 new ToDo();
