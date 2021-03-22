@@ -1,31 +1,49 @@
-const createNewTodo = document.querySelector('.newTodo'),
-    formRegister = document.querySelector('.register-form'),
-    login = document.querySelector('.form__login'),
-    password = document.querySelector('.form__password'),
-    registerButton = document.querySelector('.form__register-button'),
-    formNewTask = document.querySelector('.newTask-form'),
-    addTask = document.querySelector('.form__addTask'),
-    num0 = 0,
-    num1 = 1,
-    num2 = 2,
-    num3 = 3;
-
 class ToDo {
-
     #urlApi = 'https://todo.hillel.it';
     #token = '';
+    login = '';
+    password = '';
+    $formRegister = document.querySelector('.register-form');
+    $addTask = document.querySelector('.form__addTask');
+    containerInputs = document.querySelector('.containerInputs');
+    formNewTask = document.querySelector('.newTask-form');
 
-    constructor(loginUser, passwordUser) {
-        this.loginUser = loginUser;
-        this.password = passwordUser;
+    constructor() {
+        this.createNewTodo();
+        this.checksETarget();
+        this.getPersonalData();
     }
 
-    async auth() {
-        if (this.loginUser && this.password) {
-            formRegister.style.display = '';
-            formNewTask.style.display = 'block';
-            login.value = '';
-            password.value = '';
+    createNewTodo = () => {
+        const createNewTodo = document.querySelector('.newTodo');
+
+        createNewTodo.addEventListener('click', () => {
+            this.$formRegister.style.display === '' ?
+                this.$formRegister.style.display = 'block' :
+                this.$formRegister.style.display = '';
+            createNewTodo.style.display = 'none';
+        });
+    }
+
+    getPersonalData = () => {
+        const registerButton = document.querySelector('.form__register-button');
+
+        registerButton.addEventListener('click', () => {
+            const $login = document.querySelector('.form__login');
+            const $password = document.querySelector('.form__password');
+            this.login = $login.value;
+            this.password = $password;
+            this.auth($login, $password);
+        });
+    }
+
+    async auth($login, $password) {
+
+        if ($login.value && $password.value) {
+            this.$formRegister.style.display = '';
+            this.formNewTask.style.display = 'block';
+            $login.value = '';
+            $password.value = '';
 
             const response = await fetch(`${this.#urlApi}/auth/login`, {
                 method: 'POST',
@@ -36,60 +54,14 @@ class ToDo {
                     value: this.loginUser + this.password,
                 })
             });
-
             // eslint-disable-next-line camelcase
             const { access_token } = await response.json();
             // eslint-disable-next-line camelcase
             this.#token = access_token;
             this.getTask();
-
-        }
-        else if (!formRegister.children[num2]) {
-            const warning = document.createElement('p');
-            warning.className = 'warning';
-            warning.innerText = 'Fill the form';
-            formRegister.appendChild(warning);
-        }
-    }
-
-    async addTask(value) {
-
-        if (value) {
-            await fetch(`${this.#urlApi}/todo`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${this.#token}`,
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    value: value,
-                    priority: 1,
-                })
-            })
-                .then(data => {
-                    const responseStatus = 500;
-                    if (data.status === responseStatus) {
-                        if (formNewTask.children[num2]) {
-                            formNewTask.children[num2].remove();
-                        }
-                        const warning = document.createElement('p');
-                        warning.className = 'warning';
-                        warning.innerText = 'This note already exists';
-                        formNewTask.appendChild(warning);
-                        addTask.value = '';
-                    } else {
-                        addTask.value = '';
-                        if (formNewTask.children[num2]) {
-                            formNewTask.children[num2].remove();
-                        }
-                        this.getTask();
-                    }
-                });
-        } else if (!formNewTask.children[num2]){
-            const warning = document.createElement('p');
-            warning.className = 'warning';
-            warning.innerText = 'Write a task';
-            formNewTask.appendChild(warning);
+        } else if (!this.containerInputs.nextElementSibling) {
+            this.containerInputs.insertAdjacentHTML('afterend',
+                '<p class ="warning">Fill the form</p>');
         }
     }
 
@@ -104,34 +76,35 @@ class ToDo {
         this.renderTasks(await data.json());
     }
 
-    renderTasks = async(result) => {
-        if (document.body.children[num3].className === 'containerTasks') {
-            document.body.children[num3].remove();
-        }
-        const containerTasks = await document.createElement('ul');
-        containerTasks.className = 'containerTasks';
+    addTask = async(value) => {
 
-        const sortResult = await result.map(el => el._id).sort();
-        sortResult.map(el => {
-            const sortListTasks = result.find(el2 => el2._id === el);
-            let status = '',
-                perfomed = '';
-            if (sortListTasks.checked) {
-                status = 'Perfomed';
-                perfomed = 'perfomed';
-            } else {
-                status = 'Not perfomed';
-            }
-            containerTasks.insertAdjacentHTML('afterbegin',
-                `<li class="task">
-                    <button class="task__complite">${status}</button>
-                    <span id='${sortListTasks._id}' 
-                        class="task__value ${perfomed}">${sortListTasks.value}</span>
-                    <button class="task__edit">Edit</button>
-                    <button class="task__delete">Delete</button>
-                </li>`);
-        });
-        await formNewTask.after(containerTasks);
+        await fetch(`${this.#urlApi}/todo`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${this.#token}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                value: value,
+                priority: 1,
+            })
+        })
+            .then(data => {
+                const responseStatus = 500;
+                if (data.status === responseStatus) {
+                    if (this.containerInputs.nextElementSibling) {
+                        this.containerInputs.nextElementSibling.remove();
+                    }
+                    this.renderWarningMessage('This note already exists');
+                    this.$addTask.value = '';
+                } else {
+                    this.$addTask.value = '';
+                    if (this.containerInputs.nextElementSibling) {
+                        this.containerInputs.nextElementSibling.remove();
+                    }
+                    this.getTask();
+                }
+            });
     }
 
     async deleteTask(id) {
@@ -170,42 +143,83 @@ class ToDo {
         });
         this.getTask();
     }
-}
 
-createNewTodo.addEventListener('click', () => {
-    formRegister.style.display === '' ?
-        formRegister.style.display = 'block' :
-        formRegister.style.display = '';
-    createNewTodo.style.display = 'none';
-
-    registerButton.addEventListener('click', () => {
-        const newTodo = new ToDo(login.value, password.value);
-        newTodo.auth();
-
+    checksETarget = () => {
         document.body.addEventListener('click', (e) => {
+
             if (e.target.closest('.form__addTask-button')) {
-                newTodo.addTask(addTask.value);
+                const $newTaskContainer = document.querySelector('#newTaskContainer');
+
+                if (!this.$addTask.value) {
+                    if (!$newTaskContainer.nextElementSibling) {
+                        this.renderWarningMessage('Add task text');
+                    }
+                } else {
+                    this.addTask(this.$addTask.value);
+                    if ($newTaskContainer.nextElementSibling) {
+                        $newTaskContainer.nextElementSibling.remove();
+                    }
+                }
             } else if (e.target.closest('.task__delete')) {
-                const idTask = e.target.parentElement.children[num1].id;
-                newTodo.deleteTask(+idTask);
+                const idTask = e.target.previousElementSibling.previousElementSibling.id;
+                this.deleteTask(+idTask);
             } else if (e.target.closest('.task__edit')) {
                 e.target.classList.add('task__edit--activ');
 
-                const taskValue = e.target.parentElement.children[num1];
+                const taskValue = e.target.previousElementSibling;
+
                 const editInput = document.createElement('input');
                 editInput.className = 'edit-input';
                 editInput.value = taskValue.textContent;
-                taskValue.parentElement.children[num0].after(editInput);
+                taskValue.previousElementSibling.after(editInput);
 
                 const taskEditButton =
-                    document.querySelector('.task__edit--activ');
+                            document.querySelector('.task__edit--activ');
                 taskValue.remove();
                 taskEditButton.addEventListener('click', () => {
-                    newTodo.updateTask(editInput.value, taskValue.id);
+                    this.updateTask(editInput.value, taskValue.id);
                 });
             } else if (e.target.closest('.task__complite')) {
-                newTodo.compliteTask(e.target.parentElement.children[num1].id);
+                this.compliteTask(e.target.nextElementSibling.id);
             }
         });
-    });
-});
+    }
+
+    renderWarningMessage = (message) => {
+        this.formNewTask.insertAdjacentHTML('beforeend',
+            `<p id = "warning" class = "warning">${message}</p>`);
+    }
+
+    renderTasks = async (result) => {
+        if(this.formNewTask.nextElementSibling.className === 'containerTasks'){
+            this.formNewTask.nextElementSibling.remove();
+        }
+        const containerTasks = document.createElement('ul');
+        containerTasks.className = 'containerTasks';
+
+        const sortResult = await result.map(el => el._id).sort();
+        sortResult.map(el => {
+            const sortListTasks = result.find(el2 => el2._id === el);
+            let status = '',
+                perfomed = '',
+                stateButtonEdit = '';
+            if (sortListTasks.checked) {
+                status = 'Perfomed';
+                perfomed = 'perfomed';
+                stateButtonEdit = 'disabled';
+            } else {
+                status = 'Not perfomed';
+            }
+            containerTasks.insertAdjacentHTML('afterbegin',
+                `<li class="task">
+                    <button class="task__complite">${status}</button>
+                    <span id='${sortListTasks._id}' 
+                        class="task__value ${perfomed}">${sortListTasks.value}</span>
+                    <button class="task__edit" ${stateButtonEdit}>Edit</button>
+                    <button class="task__delete">Delete</button>
+                </li>`);
+        });
+        this.formNewTask.after(containerTasks);
+    }
+}
+new ToDo();
